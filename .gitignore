@@ -1,0 +1,33 @@
+# Bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv/
+env/
+
+# Django
+*.log
+*.pot
+*.pyc
+build/
+dist/
+
+# Migrations
+**/migrations/__pycache__/
+
+# Test artefacts
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+
+# IDEs
+.vscode/
+.idea/
+
+# Local tools
+*.sqlite3
+.pyre/
