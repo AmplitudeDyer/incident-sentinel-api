@@ -7,7 +7,6 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 
-from .schemas import BriefRequest
 from .services import (
     format_error_payload,
     get_service_from_env,
@@ -27,12 +26,6 @@ def create_brief(request: HttpRequest) -> HttpResponse:
         brief_request = validate_request_payload(payload)
     except Exception as exc:
         return JsonResponse(format_error_payload(exc), status=HTTPStatus.BAD_REQUEST)
-
-    if not isinstance(brief_request, BriefRequest):
-        return JsonResponse(
-            {"error": "Request payload invalid for briefing schema"},
-            status=HTTPStatus.BAD_REQUEST,
-        )
 
     try:
         service = get_service_from_env()

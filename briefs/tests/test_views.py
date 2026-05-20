@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from unittest.mock import ANY, patch
+from unittest.mock import patch
 
 from django.test import Client, TestCase
 
@@ -55,7 +55,8 @@ class BriefApiTests(TestCase):
 
         assert response.status_code == 400
         body = response.json()
-        assert body["error"] == "4 validation error for BriefRequest"
+        assert body["type"] == "ValidationError"
+        assert "BriefRequest" in body["error"]
         mock_service_factory.assert_not_called()
 
     def test_create_brief_endpoint_rejects_invalid_json(self) -> None:

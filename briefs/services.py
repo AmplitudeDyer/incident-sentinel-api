@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import inspect
 import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from typing import Any
 
 from .schemas import BriefRequest, BriefResponse
 
@@ -76,27 +78,56 @@ def _run_agent(model: str, api_key: str | None, brief_request: BriefRequest) -> 
     if not api_key:
         raise RuntimeError("LUMEN_AGENT_API_KEY is required when mock mode is disabled.")
 
+    os.environ.setdefault("OPENAI_API_KEY", api_key)
+
     instructions = (
         "You are a strategic planning assistant. Return structured JSON for each brief request "
         "using the output schema. Be concise but complete and include concrete steps."
     )
 
-    agent = Agent(
-        model=model,
-        system_prompt=instructions,
-        output_type=BriefResponse,
-        api_key=api_key,
+    params = inspect.signature(Agent.__init__).parameters
+    model_keyword = "model" if "model" in params else None
+    output_keyword = "result_type" if "result_type" in params else "output_type"
+    prompt_keyword = "system_prompt" if "system_prompt" in params else "instructions"
+
+    kwargs: dict[str, Any] = {
+        output_keyword: BriefResponse,
+        prompt_keyword: instructions,
+        "timeout": int(os.getenv("LUMEN_AGENT_TIMEOUT_SECONDS", "30")),
+    }
+
+    if "api_key" in params:
+        kwargs["api_key"] = api_key
+
+    try:
+        if model_keyword is None:
+            agent = Agent(model=model, **kwargs)
+        else:
+            agent = Agent(**{model_keyword: model, **kwargs})
+    except TypeError as exc:
+        raise RuntimeError(f"Failed to initialize agent: {exc}") from exc
+
+    prompt = (
+        "Produce a structured mission brief for the following JSON request."
+        f"\n\n{brief_request.model_dump_json()}"
     )
 
-    response = agent.run_sync(
-        "Generate a mission plan from this request with context and constraints.",
-        context=brief_request.model_dump_json(),
-    )
+    try:
+        result = agent.run_sync(prompt)
+    except Exception as exc:  # pragma: no cover - integration surface.
+        raise RuntimeError(f"Agent execution failed: {exc}") from exc
 
-    if isinstance(response, BriefResponse):
-        return response
-    if hasattr(response, "data") and isinstance(response.data, BriefResponse):
-        return response.data
+    if isinstance(result, BriefResponse):
+        return result
+
+    # Common PydanticAI response containers expose typed output in these attributes.
+    for attr in ("data", "output", "result", "parsed"):
+        value = getattr(result, attr, None)
+        if isinstance(value, BriefResponse):
+            return value
+
+    if isinstance(result, dict):
+        return BriefResponse.model_validate(result)
 
     raise RuntimeError("Unexpected response type from agent")
 

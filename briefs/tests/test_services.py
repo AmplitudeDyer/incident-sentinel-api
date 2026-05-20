@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from __future__ import annotations
-
 from pydantic import ValidationError
 
 from .conftest import build_request
