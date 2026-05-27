@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import pytest
 from pydantic import ValidationError
 
 from .conftest import build_request
@@ -16,5 +17,5 @@ def test_validate_request_payload_accepts_valid_payload() -> None:
 
 def test_validate_request_payload_rejects_short_title() -> None:
     payload = build_request(mission_title="No")
-    with ValidationError:
+    with pytest.raises(ValidationError):
         validate_request_payload(payload)
