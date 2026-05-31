@@ -93,11 +93,15 @@ def _run_agent(model: str, api_key: str | None, brief_request: BriefRequest) -> 
     kwargs: dict[str, Any] = {
         output_keyword: BriefResponse,
         prompt_keyword: instructions,
-        "timeout": int(os.getenv("LUMEN_AGENT_TIMEOUT_SECONDS", "30")),
     }
 
     if "api_key" in params:
         kwargs["api_key"] = api_key
+
+    if "timeout" in params:
+        kwargs["timeout"] =  int(os.getenv("LUMEN_AGENT_TIMEOUT_SECONDS", "30"))
+    elif "timeout_seconds" in params:
+        kwargs["timeout_seconds"] = int(os.getenv("LUMEN_AGENT_TIMEOUT_SECONDS", "30"))
 
     try:
         if model_keyword is None:
