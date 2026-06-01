@@ -99,7 +99,7 @@ def _run_agent(model: str, api_key: str | None, brief_request: BriefRequest) -> 
         kwargs["api_key"] = api_key
 
     if "timeout" in params:
-        kwargs["timeout"] =  int(os.getenv("LUMEN_AGENT_TIMEOUT_SECONDS", "30"))
+        kwargs["timeout"] = int(os.getenv("LUMEN_AGENT_TIMEOUT_SECONDS", "30"))
     elif "timeout_seconds" in params:
         kwargs["timeout_seconds"] = int(os.getenv("LUMEN_AGENT_TIMEOUT_SECONDS", "30"))
 
