@@ -16,3 +16,22 @@ def build_request(
         "constraints": constraints or ["No budget increase"],
         "target_date": target_date,
     }
+
+
+def build_incident_request(
+    *,
+    incident_title: str = "API Throughput Degradation",
+    description: str = "Monitoring reported elevated latency and increased 5xx responses on the public API.",
+    severity: str = "high",
+    affected_systems: list[str] | None = None,
+    observed_signals: list[str] | None = None,
+    reported_by: str | None = "on-call-ops",
+) -> dict[str, object]:
+    return {
+        "incident_title": incident_title,
+        "description": description,
+        "severity": severity,
+        "affected_systems": affected_systems or ["api-gateway", "checkout-service"],
+        "observed_signals": observed_signals or ["latency p95 spike", "error rate growth"],
+        "reported_by": reported_by,
+    }

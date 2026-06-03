@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Django management command entrypoint for the Mission Brief API project."""
+"""Django management command entrypoint for the Incident Sentinel API project."""
 
 from __future__ import annotations
 

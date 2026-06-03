@@ -5,12 +5,11 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-mission-brief-api")
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-incident-sentinel-api")
 DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in {"1", "true", "yes", "on"}
 ALLOWED_HOSTS = [
     host.strip()

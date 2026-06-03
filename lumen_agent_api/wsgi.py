@@ -1,4 +1,4 @@
-"""WSGI config for the Mission Brief API Django project."""
+"""WSGI config for the Incident Sentinel API Django project."""
 
 from __future__ import annotations
 

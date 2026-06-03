@@ -3,8 +3,8 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "lumen-agent-api"
-description = "Mission Brief API powered by Django and PydanticAI"
+name = "incident-sentinel-api"
+description = "Incident triage and planning API powered by Django and PydanticAI"
 readme = "README.md"
 requires-python = ">=3.12,<3.15"
 license = { text = "MIT" }
@@ -36,14 +36,13 @@ include = ["lumen_agent_api*", "briefs*"]
 
 [tool.black]
 line-length = 100
-target-version = ["py312", "py313", "py314"]
-include = "\.pyi?$"
+target-version = ["py312", "py313"]
+include = "\\.pyi?$"
 extend-exclude = "(^|/)migrations/"
 
 [tool.isort]
 profile = "black"
 line_length = 100
-known_django = ["django"]
 sections = "FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
 
 [tool.ruff]
@@ -77,9 +76,13 @@ warn_unused_configs = true
 ignore_missing_imports = true
 show_error_codes = true
 warn_unused_ignores = true
+warn_return_any = true
+warn_unreachable = true
 pretty = true
+disable_error_code = ["misc", "no-any-return"]
 
 [[tool.mypy.overrides]]
 module = "briefs.*"
 strict = true
 ignore_missing_imports = true
+warn_return_any = true

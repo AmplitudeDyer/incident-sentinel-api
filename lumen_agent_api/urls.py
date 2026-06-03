@@ -1,4 +1,4 @@
-"""Root URL configuration for the Mission Brief API."""
+"""Root URL configuration for the Incident Sentinel API."""
 
 from __future__ import annotations
 
